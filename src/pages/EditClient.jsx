@@ -17,6 +17,19 @@ export default function EditClient() {
     });
     const [newProduct, setNewProduct] = useState('');
 
+    // Função para resetar o formulário
+    const resetForm = () => {
+        setClientId('');
+        setClient({
+            nome: '',
+            produtos: [],
+            valorTotal: '',
+            valorPago: '',
+            valorRestante: ''
+        });
+        setNewProduct('');
+    };
+
     const handleIdChange = (e) => {
         setClientId(e.target.value);
     };
@@ -41,8 +54,10 @@ export default function EditClient() {
     };
 
     const handleAddProduct = () => {
-        setClient({ ...client, produtos: [...client.produtos, newProduct] });
-        setNewProduct('');
+        if (newProduct.trim() !== '') {
+            setClient({ ...client, produtos: [...client.produtos, newProduct] });
+            setNewProduct('');
+        }
     };
 
     const handleRemoveProduct = (index) => {
@@ -55,13 +70,7 @@ export default function EditClient() {
         axios.put(`https://api-register-eta.vercel.app/api/clients/${clientId}`, client)
             .then((response) => {
                 console.log('Cliente atualizado:', response.data);
-                setClient({
-                    nome: '',
-                    produtos: [],
-                    valorTotal: '',
-                    valorPago: '',
-                    valorRestante: ''
-                });
+                resetForm(); // Resetar o formulário após atualização
             }).catch((error) => {
                 console.log(error);
             });
@@ -71,14 +80,7 @@ export default function EditClient() {
         axios.delete(`https://api-register-eta.vercel.app/api/clients/${clientId}`)
             .then((response) => {
                 console.log('Cliente removido:', response.data);
-                setClient({
-                    nome: '',
-                    produtos: [],
-                    valorTotal: '',
-                    valorPago: '',
-                    valorRestante: ''
-                });
-                setClientId('');
+                resetForm(); // Resetar o formulário após remoção
             }).catch((error) => {
                 console.log(error);
             });
